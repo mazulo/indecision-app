@@ -5,6 +5,7 @@ class IndecisionApp extends React.Component {
         this.handleDeleteOptions = this.handleDeleteOptions.bind(this);
         this.handlePick = this.handlePick.bind(this);
         this.handleAddOption = this.handleAddOption.bind(this);
+        this.handleDeleteOption = this.handleDeleteOption.bind(this);
         this.state = {
             options: [],
         }
@@ -18,6 +19,14 @@ class IndecisionApp extends React.Component {
 
     handleDeleteOptions() {
         this.setState(() => ({ options: [] }));
+    }
+
+    handleDeleteOption(optionToRemove) {
+        this.setState((prevState) => ({ 
+            options: prevState.options.filter(
+                (option) => option !== optionToRemove
+            )
+        }));
     }
 
     handleAddOption(option) {
@@ -44,6 +53,7 @@ class IndecisionApp extends React.Component {
                     options={this.state.options}
                     hasOptions={ this.state.options.length > 0 }
                     handleDeleteOptions={ this.handleDeleteOptions }
+                    handleDeleteOption={ this.handleDeleteOption }
                 />
                 <AddOption
                     handleAddOption={ this.handleAddOption }
@@ -81,9 +91,13 @@ const Options = (props) => {
                 disabled={ !props.hasOptions }
             >remove all</button>
             {
-                props.options.map((option) => {
-                    return <Option key={ option } optionText={ option } />;
-                })
+                props.options.map((option) => (
+                    <Option
+                        key={ option }
+                        optionText={ option }
+                        handleDeleteOption={ props.handleDeleteOption }
+                    />
+                ))
             }
         </div>
     );
@@ -93,6 +107,9 @@ const Option = (props) => {
     return (
         <div>
             { props.optionText }
+            <button onClick={ (e) => props.handleDeleteOption(props.optionText) }>
+                remove
+            </button>
         </div>
     );
 };
